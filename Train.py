@@ -44,26 +44,26 @@ baseModel = tf.keras.applications.MobileNetV2(
 )
 baseModel.trainable = False
 
-model = tf.keras.Sequential(
-    [
-        tf.keras.layers.Lambda(
-            tf.keras.applications.xception.preprocess_input,
-            name="preprocessing",
-            input_shape=(HEIGHT, WIDTH, RGB),
-        ),
-        baseModel,
-        tf.keras.layers.AveragePooling2D(pool_size=(7, 7)),
-        tf.keras.layers.Flatten(name="flatten"),
-        tf.keras.layers.Dense(128, activation="relu"),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(2, activation="softmax"),
-    ]
-)
+model = tf.keras.Sequential([
+    tf.keras.layers.Lambda(
+        tf.keras.applications.xception.preprocess_input,
+        name="preprocessing",
+        input_shape=(HEIGHT, WIDTH, RGB),
+    ),
+    baseModel,
+    tf.keras.layers.AveragePooling2D(pool_size=(7, 7)),
+    tf.keras.layers.Flatten(name="flatten"),
+    tf.keras.layers.Dense(128, activation="relu"),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(2, activation="softmax"),
+])
 
 model.summary()
 
 optimizer = tf.keras.optimizers.Adam(lr=LR, decay=LR / EPOCHS)
-model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
+model.compile(loss="binary_crossentropy",
+              optimizer=optimizer,
+              metrics=["accuracy"])
 
 model.fit(
     train,
